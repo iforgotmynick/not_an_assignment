@@ -1,6 +1,6 @@
 import { Country } from "./country";
 
-type EuropeRegion =
+export type EuropeRegion =
   | 'Northern Europe'
   | 'Western Europe'
   | 'Southern Europe'
