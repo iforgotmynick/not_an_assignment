@@ -8,6 +8,7 @@ import {
   OnDestroy,
   WritableSignal,
   signal,
+  effect,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { hierarchy, pack, HierarchyCircularNode } from 'd3-hierarchy';
@@ -25,11 +26,12 @@ import {
   EuropeRegionGroup,
   SingleRegionGroup,
 } from '../../core/models/europe-region-group';
+import { ToggleSwitchComponent } from '../../shared/toggle-switch.component';
 
 @Component({
   selector: 'app-circle-packing',
   standalone: true,
-  imports: [CommonModule, InfoDrawerComponent],
+  imports: [CommonModule, InfoDrawerComponent, ToggleSwitchComponent],
   templateUrl: './circle-packing.component.html',
   styleUrls: ['./circle-packing.component.scss'],
 })
@@ -47,8 +49,16 @@ export class CirclePackingComponent
     Country | SingleRegionGroup | undefined
   > = signal(undefined);
 
-  type: 'population' | 'land_area_km2' = 'population';
+  typeSignal: WritableSignal<'land_area_km2' | 'population'> = signal<'land_area_km2' | 'population'>('population');
   data: Continent | null = null;
+
+  readonly _rerender = effect(() => {
+    const type = this.typeSignal();
+
+    if (!this.data) return;
+
+    this.updateAndRender();
+  });
 
   ngOnInit(): void {
     this.data = this.dataService.getData();
@@ -71,7 +81,7 @@ export class CirclePackingComponent
 
     const hierarchyData: CirclePackingNode = this.buildHierarchy(
       this.data,
-      this.type
+      this.typeSignal(),
     );
 
     const root = hierarchy<CirclePackingNode>(hierarchyData)

@@ -1,0 +1,13 @@
+<div class="toggle-container" (click)="toggle()">
+  <span [class.active]="model() === options[0]">
+    <ng-content select="[left]"></ng-content>
+  </span>
+
+  <div class="switch">
+    <div class="thumb" [class.right]="isRight()"></div>
+  </div>
+
+  <span [class.active]="model() === options[1]">
+    <ng-content select="[right]"></ng-content>
+  </span>
+</div>

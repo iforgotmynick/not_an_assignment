@@ -1,9 +1,19 @@
-<svg
-  #svgContainer
-  width="100%"
-  height="100%"
-  preserveAspectRatio="xMidYMid meet"
-></svg>
+<div class="chart-container">
+  <svg
+    #svgContainer
+    width="100%"
+    height="100%"
+    preserveAspectRatio="xMidYMid meet"
+  ></svg>
+
+  <app-toggle-switch
+    [model]="typeSignal"
+    [options]="['land_area_km2', 'population']"
+  >
+    <ng-container left>Area</ng-container>
+    <ng-container right>Population</ng-container>
+  </app-toggle-switch>
+</div>
 
 <app-info-drawer
   *ngIf="selectedTerritory()"
