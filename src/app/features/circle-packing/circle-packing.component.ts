@@ -5,13 +5,13 @@ import {
   AfterViewInit,
   OnInit,
   inject,
+  OnDestroy,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   hierarchy,
   pack,
   HierarchyCircularNode,
-  HierarchyNode,
 } from 'd3-hierarchy';
 import { select } from 'd3-selection';
 import { scaleOrdinal } from 'd3-scale';
@@ -29,24 +29,31 @@ import { CirclePackingNode } from './circle-packing-node';
   templateUrl: './circle-packing.component.html',
   styleUrls: ['./circle-packing.component.scss'],
 })
-export class CirclePackingComponent implements OnInit, AfterViewInit {
+export class CirclePackingComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('svgContainer', { static: true })
+
   svgRef!: ElementRef<SVGSVGElement>;
 
   private readonly dataService = inject(DataService);
+  private readonly margin = 40;
+  private width: number | null = null;
+  private height: number | null = null;
 
   type: 'population' | 'land_area_km2' = 'population';
   data: Continent | null = null;
 
-  readonly width = 800;
-  readonly height = 800;
 
   ngOnInit(): void {
     this.data = this.dataService.getData();
   }
 
   ngAfterViewInit(): void {
-    this.render();
+    this.updateAndRender();
+    window.addEventListener('resize', this.updateAndRender);
+  }
+
+  ngOnDestroy(): void {
+    window.removeEventListener('resize', this.updateAndRender);
   }
 
   private render(): void {
@@ -62,7 +69,7 @@ export class CirclePackingComponent implements OnInit, AfterViewInit {
       .sort((a, b) => (b.value ?? 0) - (a.value ?? 0));
 
     const packedRoot = pack<CirclePackingNode>()
-      .size([this.width, this.height])
+      .size([this.width!, this.height!])
       .padding(5)(root);
 
     const countriesColor = scaleOrdinal<string>()
@@ -149,5 +156,12 @@ export class CirclePackingComponent implements OnInit, AfterViewInit {
         })),
       })),
     };
+  }
+
+  private updateAndRender = () => {
+    const { width, height } = this.svgRef.nativeElement.getBoundingClientRect();
+    this.width = width;
+    this.height = height;
+    this.render();
   }
 }
