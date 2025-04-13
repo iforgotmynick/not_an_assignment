@@ -40,7 +40,6 @@ export class CirclePackingComponent
   svgRef!: ElementRef<SVGSVGElement>;
 
   private readonly dataService = inject(DataService);
-  private readonly margin = 40;
   private width: number | null = null;
   private height: number | null = null;
 
@@ -167,6 +166,34 @@ export class CirclePackingComponent
       .style('font-size', '10px')
       .style('pointer-events', 'none')
       .style('fill', '#333');
+
+    svg
+      .append('g')
+      .selectAll('text.region-label')
+      .data(packedRoot.children || [])
+      .enter()
+      .append('text')
+      .attr('class', 'region-label')
+      .attr('x', (d) => {
+        const yAbove = d.y! - d.r! - 10;
+
+        return yAbove < 0 ? d.x! + d.r! * 0.8 : d.x!;
+      })
+      .attr('y', (d) => {
+        const yAbove = d.y! - d.r! - 10;
+
+        return yAbove < 0 ? d.y! - d.r! + 15 : yAbove;
+      })
+      .attr('text-anchor', (d) => {
+        const yAbove = d.y! - d.r! - 10;
+
+        return yAbove < 0 ? 'start' : 'middle';
+      })
+      .text((d) => d.data.name)
+      .style('font-size', '20px')
+      .style('font-weight', 'bold')
+      .style('fill', d => countriesColor(d.data.name))
+      .style('pointer-events', 'none');
   }
 
   private buildHierarchy(
