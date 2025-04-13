@@ -4,3 +4,9 @@
   height="100%"
   preserveAspectRatio="xMidYMid meet"
 ></svg>
+
+<app-info-drawer
+  *ngIf="selectedTerritory()"
+  [territory]="selectedTerritory()!"
+  (close)="selectedTerritory.set(undefined)"
+></app-info-drawer>

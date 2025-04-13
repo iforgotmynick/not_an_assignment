@@ -9,3 +9,7 @@ export type EuropeRegion =
 export type EuropeRegionGroup = {
   [R in EuropeRegion]: Country[];
 };
+
+export type SingleRegionGroup<R extends EuropeRegion = EuropeRegion> = {
+  [K in R]: Country[];
+};

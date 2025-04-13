@@ -6,13 +6,11 @@ import {
   OnInit,
   inject,
   OnDestroy,
+  WritableSignal,
+  signal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  hierarchy,
-  pack,
-  HierarchyCircularNode,
-} from 'd3-hierarchy';
+import { hierarchy, pack, HierarchyCircularNode } from 'd3-hierarchy';
 import { select } from 'd3-selection';
 import { scaleOrdinal } from 'd3-scale';
 import { schemeCategory10 } from 'd3-scale-chromatic';
@@ -20,18 +18,25 @@ import { rgb } from 'd3-color';
 import { Continent } from '../../core/models/continent';
 import { DataService } from '../../core/data/data.service';
 import { CirclePackingNode } from './circle-packing-node';
-
+import { InfoDrawerComponent } from '../info-drawer/info-drawer.component';
+import { Country } from '../../core/models/country';
+import {
+  EuropeRegion,
+  EuropeRegionGroup,
+  SingleRegionGroup,
+} from '../../core/models/europe-region-group';
 
 @Component({
   selector: 'app-circle-packing',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, InfoDrawerComponent],
   templateUrl: './circle-packing.component.html',
   styleUrls: ['./circle-packing.component.scss'],
 })
-export class CirclePackingComponent implements OnInit, AfterViewInit, OnDestroy {
+export class CirclePackingComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
   @ViewChild('svgContainer', { static: true })
-
   svgRef!: ElementRef<SVGSVGElement>;
 
   private readonly dataService = inject(DataService);
@@ -39,9 +44,12 @@ export class CirclePackingComponent implements OnInit, AfterViewInit, OnDestroy 
   private width: number | null = null;
   private height: number | null = null;
 
+  readonly selectedTerritory: WritableSignal<
+    Country | SingleRegionGroup | undefined
+  > = signal(undefined);
+
   type: 'population' | 'land_area_km2' = 'population';
   data: Continent | null = null;
-
 
   ngOnInit(): void {
     this.data = this.dataService.getData();
@@ -62,10 +70,13 @@ export class CirclePackingComponent implements OnInit, AfterViewInit, OnDestroy 
     const svg = select(this.svgRef.nativeElement);
     svg.selectAll('*').remove();
 
-    const hierarchyData: CirclePackingNode = this.buildHierarchy(this.data, this.type);
+    const hierarchyData: CirclePackingNode = this.buildHierarchy(
+      this.data,
+      this.type
+    );
 
     const root = hierarchy<CirclePackingNode>(hierarchyData)
-      .sum(d => d.value ?? 0)
+      .sum((d) => d.value ?? 0)
       .sort((a, b) => (b.value ?? 0) - (a.value ?? 0));
 
     const packedRoot = pack<CirclePackingNode>()
@@ -93,10 +104,10 @@ export class CirclePackingComponent implements OnInit, AfterViewInit, OnDestroy 
       .data(packedRoot.descendants().slice(1))
       .enter()
       .append('circle')
-      .attr('cx', d => d.x!)
-      .attr('cy', d => d.y!)
-      .attr('r', d => d.r!)
-      .attr('fill', d => {
+      .attr('cx', (d) => d.x)
+      .attr('cy', (d) => d.y)
+      .attr('r', (d) => d.r)
+      .attr('fill', (d) => {
         if (d.children) {
           const color = countriesColor(d.data.name);
           return lightenColor(color, 40);
@@ -115,7 +126,9 @@ export class CirclePackingComponent implements OnInit, AfterViewInit, OnDestroy 
           .attr('fill', lighter);
       })
       .on('mouseout', function () {
-        const d = select(this).datum() as HierarchyCircularNode<CirclePackingNode>;
+        const d = select(
+          this
+        ).datum() as HierarchyCircularNode<CirclePackingNode>;
         const baseColor = d.children
           ? lightenColor(countriesColor(d.data.name), 40)
           : countriesColor(d.parent?.data.name || '');
@@ -125,26 +138,41 @@ export class CirclePackingComponent implements OnInit, AfterViewInit, OnDestroy 
           .attr('fill', baseColor);
       })
       .on('click', (_, d) => {
-        // this.countryClick.emit(d.data.data);
+        if (!d.children && d.data.data) {
+          // Leaf node → country
+          this.selectedTerritory.set(d.data.data);
+        } else if (d.children && d.data.name) {
+          const regionName = d.data.name as EuropeRegion;
+          const countries = d.children.map(
+            (child) => child.data.data
+          ) as Country[];
+
+          this.selectedTerritory.set({
+            [regionName]: countries,
+          } as SingleRegionGroup);
+        }
       });
 
     svg
       .append('g')
       .selectAll('text')
-      .data(packedRoot.descendants().filter(d => !d.children))
+      .data(packedRoot.descendants().filter((d) => !d.children))
       .enter()
       .append('text')
-      .attr('x', d => d.x!)
-      .attr('y', d => d.y!)
+      .attr('x', (d) => d.x)
+      .attr('y', (d) => d.y)
       .attr('text-anchor', 'middle')
       .attr('dy', '0.3em')
-      .text(d => d.data.name)
+      .text((d) => d.data.name)
       .style('font-size', '10px')
       .style('pointer-events', 'none')
       .style('fill', '#333');
   }
 
-  private buildHierarchy(data: Continent, type: 'population' | 'land_area_km2'): CirclePackingNode {
+  private buildHierarchy(
+    data: Continent,
+    type: 'population' | 'land_area_km2'
+  ): CirclePackingNode {
     return {
       name: 'Europe',
       children: Object.entries(data.Europe).map(([region, countries]) => ({
@@ -163,5 +191,5 @@ export class CirclePackingComponent implements OnInit, AfterViewInit, OnDestroy 
     this.width = width;
     this.height = height;
     this.render();
-  }
+  };
 }

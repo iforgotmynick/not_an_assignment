@@ -1,11 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, Input, Output, EventEmitter, ChangeDetectionStrategy } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { Country } from '../../core/models/country';
+import { EuropeRegionGroup, SingleRegionGroup } from '../../core/models/europe-region-group';
+import { RegionNamePipe } from "./region-name.pipe";
+import { SumPopulationPipe } from "./sum-population.pipe";
+import { SumAreaPipe } from "./sum-area.pipe";
 
 @Component({
   selector: 'app-info-drawer',
-  imports: [],
+  imports: [CommonModule, RegionNamePipe, SumPopulationPipe, SumAreaPipe],
   templateUrl: './info-drawer.component.html',
-  styleUrl: './info-drawer.component.scss'
+  styleUrls: ['./info-drawer.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class InfoDrawerComponent {
+  @Input() territory!: Country | SingleRegionGroup;
+  @Output() close = new EventEmitter<void>();
 
+  isCountry(territory: Country | EuropeRegionGroup): territory is Country {
+    return 'country' in territory;
+  }
 }
