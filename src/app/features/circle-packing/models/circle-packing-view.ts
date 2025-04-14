@@ -1,5 +1,5 @@
-import { Continent } from "../../../core/models/continent";
-import { CircleTypes } from "./circle-types";
+import { Continent } from '../../../core/models/continent';
+import { CircleTypes } from './circle-types';
 
 export interface CirclePackingView {
   type: CircleTypes;

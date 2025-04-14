@@ -8,9 +8,8 @@ describe('InfoDrawerComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [InfoDrawerComponent]
-    })
-    .compileComponents();
+      imports: [InfoDrawerComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(InfoDrawerComponent);
     component = fixture.componentInstance;

@@ -1,15 +1,7 @@
 <div class="chart-container">
-  <svg
-    #svgContainer
-    width="100%"
-    height="100%"
-    preserveAspectRatio="xMidYMid meet"
-  ></svg>
+  <svg #svgContainer width="100%" height="100%" preserveAspectRatio="xMidYMid meet"></svg>
 
-  <app-toggle-switch
-    [model]="metric"
-    [options]="['land_area_km2', 'population']"
-  >
+  <app-toggle-switch [model]="metric" [options]="['land_area_km2', 'population']">
     <ng-container left>Area</ng-container>
     <ng-container right>Population</ng-container>
   </app-toggle-switch>
@@ -18,5 +10,5 @@
 <app-info-drawer
   *ngIf="selectedTerritory()"
   [territory]="selectedTerritory()!"
-  (close)="selectedTerritory.set(undefined)"
+  (closeDrawer)="selectedTerritory.set(undefined)"
 ></app-info-drawer>

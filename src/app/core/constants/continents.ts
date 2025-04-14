@@ -1,3 +1,3 @@
 export enum Continents {
-  EUROPE = 'Europe'
+  EUROPE = 'Europe',
 }

@@ -19,10 +19,7 @@ import { DataService } from '../../core/data/data.service';
 import { CirclePackingNode } from './models/circle-packing-node';
 import { InfoDrawerComponent } from '../info-drawer/info-drawer.component';
 import { Country } from '../../core/models/country';
-import {
-  EuropeRegion,
-  SingleRegionGroup,
-} from '../../core/models/europe-region-group';
+import { EuropeRegion, SingleRegionGroup } from '../../core/models/europe-region-group';
 import { ToggleSwitchComponent } from '../../shared/toggle-switch.component';
 import { CirclePackingService } from './services/circle-packing.service';
 import { CircleTypes } from './models/circle-types';
@@ -35,9 +32,7 @@ import { CirclePackingView } from './models/circle-packing-view';
   styleUrls: ['./circle-packing.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class CirclePackingComponent
-  implements OnInit, AfterViewInit, OnDestroy
-{
+export class CirclePackingComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('svgContainer', { static: true })
   svgRef!: ElementRef<SVGSVGElement>;
 
@@ -46,17 +41,13 @@ export class CirclePackingComponent
 
   private resizeObserver!: ResizeObserver;
 
-  readonly selectedTerritory: WritableSignal<
-    Country | SingleRegionGroup | undefined
-  > = signal(undefined);
+  readonly selectedTerritory: WritableSignal<Country | SingleRegionGroup | undefined> =
+    signal(undefined);
 
   readonly width: WritableSignal<number | null> = signal<number | null>(null);
   readonly height: WritableSignal<number | null> = signal<number | null>(null);
-  readonly metric: WritableSignal<CircleTypes> =
-    signal<CircleTypes>('population');
-  readonly data: WritableSignal<Continent | null> = signal<Continent | null>(
-    null
-  );
+  readonly metric: WritableSignal<CircleTypes> = signal<CircleTypes>('population');
+  readonly data: WritableSignal<Continent | null> = signal<Continent | null>(null);
 
   readonly viewModel = computed<CirclePackingView>(() => ({
     type: this.metric(),
@@ -111,13 +102,13 @@ export class CirclePackingComponent
 
   private onNodeClick = (
     _: CirclePackingNode,
-    d: HierarchyCircularNode<CirclePackingNode>
+    d: HierarchyCircularNode<CirclePackingNode>,
   ): void => {
     if (!d.children && d.data.data) {
       this.selectedTerritory.set(d.data.data);
     } else if (d.children && d.data.name) {
       const regionName = d.data.name as EuropeRegion;
-      const countries = d.children.map((child) => child.data.data) as Country[];
+      const countries = d.children.map(child => child.data.data) as Country[];
 
       this.selectedTerritory.set({
         [regionName]: countries,

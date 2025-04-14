@@ -1,31 +1,22 @@
-<div class="backdrop" (click)="close.emit()">
+<div class="backdrop" (click)="closeDrawer.emit()">
   <div class="drawer" (click)="$event.stopPropagation()">
     @if (isCountry(territory)) {
-    <img
-      [src]="territory.flag"
-      alt="{{ territory.country }} flag"
-      class="flag"
-    />
+      <img [src]="territory.flag" alt="{{ territory.country }} flag" class="flag" />
 
-    <h2 class="drawer-title">{{ territory.country }}</h2>
-    <div>
-      <strong>Land Area:</strong> {{ territory.land_area_km2 | number }} km²
-    </div>
-    <div><strong>Population:</strong> {{ territory.population | number }}</div>
+      <h2 class="drawer-title">{{ territory.country }}</h2>
+      <div><strong>Land Area:</strong> {{ territory.land_area_km2 | number }} km²</div>
+      <div><strong>Population:</strong> {{ territory.population | number }}</div>
 
-    <a [href]="territory.wikipedia" target="_blank" rel="noopener noreferrer">
-      Learn More
-    </a>
-    } @else { @let region = territory | regionName;
+      <a [href]="territory.wikipedia" target="_blank" rel="noopener noreferrer"> Learn More </a>
+    } @else {
+      @let region = territory | regionName;
 
-    <h2 class="drawer-title">{{ region }}</h2>
-    <div>
-      <strong>Land Area:</strong> {{ territory[region] | sumArea | number }} km²
-    </div>
-    <div>
-      <strong>Population:</strong>
-      {{ territory[region] | sumPopulation | number }}
-    </div>
+      <h2 class="drawer-title">{{ region }}</h2>
+      <div><strong>Land Area:</strong> {{ territory[region] | sumArea | number }} km²</div>
+      <div>
+        <strong>Population:</strong>
+        {{ territory[region] | sumPopulation | number }}
+      </div>
     }
   </div>
 </div>

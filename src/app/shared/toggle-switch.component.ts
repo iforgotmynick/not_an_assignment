@@ -1,10 +1,4 @@
-import {
-  Component,
-  Input,
-  computed,
-  signal,
-  WritableSignal,
-} from '@angular/core';
+import { Component, Input, computed, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({

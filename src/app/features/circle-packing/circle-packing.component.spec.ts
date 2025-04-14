@@ -8,9 +8,8 @@ describe('CirclePackingComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CirclePackingComponent]
-    })
-    .compileComponents();
+      imports: [CirclePackingComponent],
+    }).compileComponents();
 
     fixture = TestBed.createComponent(CirclePackingComponent);
     component = fixture.componentInstance;
