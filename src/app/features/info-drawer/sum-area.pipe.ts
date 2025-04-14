@@ -1,6 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { Country } from '../../core/models/country';
 
+// Used to sum the area of all the countries in region
 @Pipe({
   name: 'sumArea',
   standalone: true,

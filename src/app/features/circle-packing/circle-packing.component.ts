@@ -36,6 +36,7 @@ export class CirclePackingComponent implements OnInit, AfterViewInit, OnDestroy 
   @ViewChild('svgContainer', { static: true })
   svgRef!: ElementRef<SVGSVGElement>;
 
+  // inject services that provide data and render the chart
   private readonly dataService = inject(DataService);
   private readonly circlePackingService = inject(CirclePackingService);
 
@@ -49,6 +50,7 @@ export class CirclePackingComponent implements OnInit, AfterViewInit, OnDestroy 
   readonly metric: WritableSignal<CircleTypes> = signal<CircleTypes>('population');
   readonly data: WritableSignal<Continent | null> = signal<Continent | null>(null);
 
+  // Computed signals that triggers on any of type/data/size changes
   readonly viewModel = computed<CirclePackingView>(() => ({
     type: this.metric(),
     data: this.data(),
@@ -56,6 +58,7 @@ export class CirclePackingComponent implements OnInit, AfterViewInit, OnDestroy 
     height: this.height(),
   }));
 
+  // Rerender when viewModel is changed
   readonly _rerender = effect(() => {
     const { data, width, height } = this.viewModel();
 
@@ -71,6 +74,7 @@ export class CirclePackingComponent implements OnInit, AfterViewInit, OnDestroy 
   ngAfterViewInit(): void {
     this.updateBounds();
 
+    // subscription to  window resize
     this.resizeObserver = new ResizeObserver(() => this.updateBounds());
     this.resizeObserver.observe(this.svgRef.nativeElement);
   }
@@ -100,6 +104,7 @@ export class CirclePackingComponent implements OnInit, AfterViewInit, OnDestroy 
     this.height.set(height);
   };
 
+  // What is passed to drawer on click
   private onNodeClick = (
     _: CirclePackingNode,
     d: HierarchyCircularNode<CirclePackingNode>,

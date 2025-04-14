@@ -17,6 +17,8 @@ export class InfoDrawerComponent {
   @Input() territory!: Country | SingleRegionGroup;
   @Output() readonly closeDrawer = new EventEmitter<void>();
 
+  // if Country then show template as expected
+  // if region - show accumulated stats
   isCountry(territory: Country | SingleRegionGroup): territory is Country {
     return 'country' in territory;
   }

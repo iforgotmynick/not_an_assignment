@@ -9,6 +9,9 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./toggle-switch.component.scss'],
 })
 export class ToggleSwitchComponent<T> {
+  // Reusable toggle switch component
+  // Enables passing signal and two options to toggle between them
+
   @Input({ required: true }) model!: WritableSignal<T>;
   @Input({ required: true }) options!: [T, T];
 

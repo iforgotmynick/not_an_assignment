@@ -1,5 +1,6 @@
 import { rgb } from 'd3-color';
 
+// calculates a bit lighter color to highlight hovering
 export const lightenColor = (input: string, percent: number): string => {
   const c = rgb(input);
   if (!c) return '#ccc';

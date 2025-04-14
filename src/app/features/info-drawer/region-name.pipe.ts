@@ -1,6 +1,7 @@
 import { Pipe, PipeTransform } from '@angular/core';
 import { SingleRegionGroup } from '../../core/models/europe-region-group';
 
+// Get region name from {'Eastern Europe': Country[]}
 @Pipe({
   name: 'regionName',
   standalone: true,
