@@ -33,5 +33,8 @@ export default [
     },
     rules: {},
   },
+  {
+    ignores: ['**/*.spec.ts', 'coverage/*'],
+  },
   prettier,
 ];
