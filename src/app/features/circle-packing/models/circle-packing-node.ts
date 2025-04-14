@@ -1,4 +1,4 @@
-import { Country } from "../../core/models/country";
+import { Country } from "../../../core/models/country";
 
 export interface CirclePackingNode {
   name: string;
